@@ -24,7 +24,7 @@ def build_url(endpoint, params={}):
     endpoints = {
         'main': 'https://fantasy.premierleague.com/api/bootstrap-static/',
         'fixtures': 'https://fantasy.premierleague.com/api/fixtures/',
-        'player_fixtures': 'https://fantasy.premierleague.com/api/element-summary/{element_id}/{test_id}/',
+        'player_summary': 'https://fantasy.premierleague.com/api/element-summary/{element_id}/',
         'gameweek': 'https://fantasy.premierleague.com/api/event/{gameweek}/live/'
     }
 
