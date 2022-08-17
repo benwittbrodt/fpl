@@ -5,14 +5,14 @@ from sqlalchemy import create_engine
 
 
 def db_engine():
-    db_server = '10.0.0.41'
+    db_server = 'localhost'
     db_name = 'fpl'
-    db_port = '5432'
-    db_username = 'postgres'
+    db_port = '3306'
+    db_username = 'root'
     db_password = 'fiorfan89'
     # Use sqlalchemy to create engine
     engine = create_engine(
-        f'postgresql+psycopg2://postgres:{db_password}@{db_server}/{db_name}')
+        f'mysql+mysqlconnector://root:{db_password}@{db_server}/{db_name}')
     return engine
 
 
