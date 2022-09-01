@@ -16,7 +16,7 @@ def db_engine():
     return engine
 
 
-def build_url(endpoint, params={}):
+def get_data(endpoint, params={}):
     """
     Creates a url string with parameters passed in
     """
@@ -35,16 +35,8 @@ def build_url(endpoint, params={}):
             if key in url:
                 url = url.replace('{'+key+'}', str(val))
 
-    return url
-
-
-def get_data(url):
-    """ 
-    Request data from supplied endpoint
-    Returns a json data object, or a exception code
-    """
     response = requests.get(url)
-
+    print(f'Querying the API URL: {url}')
     if response.status_code != 200:
         raise Exception("Response was code " + str(response.status_code))
 

@@ -26,3 +26,14 @@ Sections:
  * in db fpl.element_stat
 * element_types
  * in db fpl.element_type
+
+### Fixtures
+https://fantasy.premierleague.com/api/fixtures/
+
+Sections:
+
+* fixtures
+ * in db fpl.fixture
+* stats
+ * in db fpl.stat
+ 
