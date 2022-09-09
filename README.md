@@ -4,12 +4,20 @@
 
 ### Main
 https://fantasy.premierleague.com/api/bootstrap-static/
-
+### TODO: add season names to tables
 Sections: 
    
 * events
  * in db fpl.event 
- * sub table chip_plays, top_element
+ * `id, name, deadline_time, average_entry_score, finished,
+       data_checked, highest_scoring_entry, deadline_time_game_offset,
+       highest_score, is_previous, is_current, is_next,
+       cup_leagues_created, h2h_ko_matches_created, most_selected,
+       most_transferred_in, top_element, transfers_made,
+       most_captained, most_vice_captained, season_name`
+ * related table chip_plays
+ * `chip_name, num_played, event_id`
+ * related table top_element	
 * game_settings
  * in db fpl.game_setting
 * phases
@@ -25,7 +33,7 @@ Sections:
 * element_types
  * in db fpl.element_type
 
-### Fixtures
+### Fixtures - initial DB build done
 https://fantasy.premierleague.com/api/fixtures/
 
 Sections:

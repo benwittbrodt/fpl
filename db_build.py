@@ -5,18 +5,44 @@ from func import db_engine, get_data
 
 db = db_engine()
 
+# Utilities
 
-# def build_main(db, data=get_data('main')):
-#     for key, val in data.items():
-#         print(key)
+
 def season_name():
     """
     Returns the name of a FPL season eg '22_23'
     """
     now = datetime.datetime.now()
+
     this_yr = now.strftime('%y')
     next_yr = int(now.strftime('%y'))+1
-    return f"{this_yr}_{next_yr}"
+    last_yr = int(now.strftime('%y'))-1
+
+    if now.month in [8, 9, 10, 11, 12]:
+        return f"{this_yr}_{next_yr}"
+    elif now.month in [1, 2, 3, 4, 5]:
+        return f"{last_yr}_{this_yr}"
+
+# Main endpoint
+
+# Main -> Events
+
+
+def events(data):
+    """
+    creates dataframe for the events endpoint (without top_element_info and chip_plays)
+    """
+    df = pd.DataFrame(data['events'])
+    df.drop(['deadline_time_epoch', 'top_element_info',
+            'chip_plays'], axis=1, inplace=True)
+    df.fillna(0, inplace=True)
+    convert_cols = ['highest_scoring_entry', 'highest_score', 'most_selected',
+                    'most_transferred_in', 'top_element', 'most_captained', 'most_vice_captained']
+    df[convert_cols] = df[convert_cols].astype(int)
+    df['season_name'] = season_name()
+    id_str = str.split(season_name(), '_')
+    df['id'] = id_str[0] + id_str[1] + df['id'].astype('str')
+    return df
 
 
 def top_element(data):
@@ -44,25 +70,31 @@ def chip_plays(data):
     """
     creates a database-ready df with the number of chip plays each week
     input: data dictionary from the events API call
+    pd.to_sql needs index=False
     """
+
     chip = pd.DataFrame()
+    id_str = str.split(season_name(), '_')
 
     i = 1
     for index in data['events']:
 
         item_df = pd.DataFrame(index['chip_plays'])
-        item_df['event_id'] = i
+        item_df['event_id'] = f'{id_str[0]}{id_str[1]}{i}'
         chip = pd.concat([chip, item_df])
         i += 1
 
     chip['num_played'] = chip['num_played'].astype(int)
     chip = chip.reset_index()
+    chip.drop('index', axis=1, inplace=True)
     return chip
 
 
 def to_db(df, db, table_name, **kwargs):
     """ Entering into database"""
     return df.to_sql(table_name, db, kwargs)
+
+# Fixture endpoint
 
 
 def fixture_stats(data):
@@ -94,6 +126,8 @@ def fixture_stats(data):
                                    'fixture_id', 'gameweek', 'fixture_num', 'stat_name', 'team_id', 'value', 'element_id'], orient='index')
     stats['season_name'] = season_name()
     return stats
+
+# Fixture endpoint
 
 
 def fixtures(data):
