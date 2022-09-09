@@ -51,11 +51,11 @@ def top_element(data):
     input is the data dictionary for events from the API
     """
     highest_score = pd.DataFrame()
-
+    id_str = str.split(season_name(), '_')
     for count, event in enumerate(data['events'], start=1):
 
         item_df = pd.DataFrame(event['top_element_info'], index=[count])
-        item_df['gw_num'] = event['id']
+        item_df['event_id'] = f'{id_str[0]}{id_str[1]}{count}'
         highest_score = pd.concat([highest_score, item_df])
 
     highest_score = highest_score.dropna()

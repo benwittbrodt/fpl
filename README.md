@@ -18,6 +18,7 @@ Sections:
  * related table chip_plays
  * `chip_name, num_played, event_id`
  * related table top_element	
+ * `element_id, points,	event_id, season_name`
 * game_settings
  * in db fpl.game_setting
 * phases
