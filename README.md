@@ -21,18 +21,28 @@ Sections:
  * `element_id, points,	event_id, season_name`
 * game_settings
  * in db fpl.game_setting
+ * Not really needed - settings shouldn't change, but might not include in final
 * phases
  * in db fpl.phase
+ * Not really needed - phases don't matter too much
 * teams
  * in db fpl.team 
+ * `team_id, draw, form, season_team_id, loss, name, played,
+       points, position, short_name, strength, team_division,
+       unavailable, win, strength_overall_home, strength_overall_away,
+       strength_attack_home, strength_attack_away, strength_defence_home,
+       strength_defence_away, pulse_id, season_name`
 * total_players - single number, not needed in db
 * elements
  * in db fpl.element 
  * Needs an update/historical setup
+   * Also needs a sub-table/foreign keys for the stat updates
 * element_stats
- * in db fpl.element_stat
+ * in db fpl.element_stat_type
+ * `label, name`
 * element_types
  * in db fpl.element_type
+ * `id, plural_name, plural_name_short, singular_name, singular_name_short, squad_sheet, squad_min_play, squad_max_play, ui_shirt_specific, element_count`
 
 ### Fixtures - initial DB build done
 https://fantasy.premierleague.com/api/fixtures/

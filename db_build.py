@@ -145,3 +145,11 @@ def fixtures(data):
     df['season_name'] = season_name()
     df.rename(columns=to_rename, inplace=True)
     return df
+
+
+def teams(data):
+    df = pd.DataFrame(data['teams'])
+    df['season_name'] = season_name()
+    df.rename(columns={'id': 'season_team_id',
+              'code': 'team_id'}, inplace=True)
+    return df
