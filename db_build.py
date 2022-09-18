@@ -1,3 +1,4 @@
+from os import stat
 import pandas as pd
 import datetime
 
@@ -39,6 +40,8 @@ def events(data):
     convert_cols = ['highest_scoring_entry', 'highest_score', 'most_selected',
                     'most_transferred_in', 'top_element', 'most_captained', 'most_vice_captained']
     df[convert_cols] = df[convert_cols].astype(int)
+    df['deadline_time'] = pd.to_datetime(
+        df['deadline_time']).dt.tz_localize(None)
     df['season_name'] = season_name()
     id_str = str.split(season_name(), '_')
     df['id'] = id_str[0] + id_str[1] + df['id'].astype('str')
@@ -90,9 +93,40 @@ def chip_plays(data):
     return chip
 
 
-def to_db(df, db, table_name, **kwargs):
-    """ Entering into database"""
-    return df.to_sql(table_name, db, kwargs)
+def element_process(data, table):
+    """
+    Processes all of the data into specific tables from the elements endpoint
+    """
+    if table == 'element_stat_calc':
+        filter_cols = ['bonus', 'bps', 'influence', 'creativity', 'threat', 'ict_index', 'influence_rank', 'influence_rank_type',
+                       'creativity_rank', 'creativity_rank_type', 'threat_rank', 'threat_rank_type', 'ict_index_rank', 'ict_index_rank_type', 'corners_and_indirect_freekicks_order',
+                       'corners_and_indirect_freekicks_text', 'direct_freekicks_order', 'direct_freekicks_text', 'penalties_order', 'penalties_text']
+    elif table == 'element_stat_played':
+        filter_cols = ['minutes', 'goals_scored', 'assists', 'clean_sheets', 'goals_conceded',
+                       'own_goals', 'penalties_saved', 'penalties_missed', 'yellow_cards', 'red_cards', 'saves']
+    elif table == 'element_news':
+        filter_cols = ['news', 'news_added']
+    elif table == 'element_price':
+        filter_cols = ['cost_change_event', 'cost_change_event_fall', 'cost_change_start',
+                       'cost_change_start_fall', 'transfers_in', 'transfers_in_event', 'transfers_out', 'transfers_out_event']
+    elif table == 'element_info':
+        filter_cols = ['element_type', 'now_cost', 'first_name', 'second_name',
+                       'dreamteam_count', 'form', 'value_form', 'photo', 'team_code', 'web_name']
+    elif table == 'element_season_stat':
+        filter_cols = ['points_per_game', 'total_points', 'value_season']
+    elif table == 'element_event_info':
+        filter_cols = ['chance_of_playing_next_round', 'chance_of_playing_this_round', 'expectedpt_next',
+                       'expectedpt_this', 'event_points', 'in_dreamteam', 'status', 'selected_by_percent']
+
+    df = pd.DataFrame(data['elements'])
+    out_df = df[['code', ]+filter_cols].copy()
+    out_df['season_name'] = season_name()
+    out_df.rename(columns={'code': 'element_id'}, inplace=True)
+
+    if table == 'element_news':
+        out_df = out_df.dropna()
+    return out_df
+
 
 # Fixture endpoint
 

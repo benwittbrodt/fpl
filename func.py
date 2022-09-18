@@ -4,15 +4,25 @@ import json
 from sqlalchemy import create_engine
 
 
+# def db_engine():
+#     db_server = 'localhost'
+#     db_name = 'fpl'
+#     db_port = '3306'
+#     db_username = 'root'
+#     db_password = 'fiorfan89'
+#     # Use sqlalchemy to create engine
+#     engine = create_engine(
+#         f'mysql+mysqlconnector://root:{db_password}@{db_server}/{db_name}')
+#     return engine
+
+
 def db_engine():
     db_server = 'localhost'
-    db_name = 'fpl'
-    db_port = '3306'
-    db_username = 'root'
+    db_username = 'postgres'
     db_password = 'fiorfan89'
     # Use sqlalchemy to create engine
     engine = create_engine(
-        f'mysql+mysqlconnector://root:{db_password}@{db_server}/{db_name}')
+        f'postgresql://{db_username}:{db_password}@{db_server}/postgres')
     return engine
 
 
