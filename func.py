@@ -1,29 +1,6 @@
 import requests
 import pandas as pd
 import json
-from sqlalchemy import create_engine
-
-
-# def db_engine():
-#     db_server = 'localhost'
-#     db_name = 'fpl'
-#     db_port = '3306'
-#     db_username = 'root'
-#     db_password = 'fiorfan89'
-#     # Use sqlalchemy to create engine
-#     engine = create_engine(
-#         f'mysql+mysqlconnector://root:{db_password}@{db_server}/{db_name}')
-#     return engine
-
-
-def db_engine():
-    db_server = 'localhost'
-    db_username = 'postgres'
-    db_password = 'fiorfan89'
-    # Use sqlalchemy to create engine
-    engine = create_engine(
-        f'postgresql://{db_username}:{db_password}@{db_server}/postgres')
-    return engine
 
 
 def get_data(endpoint, params={}):
@@ -53,3 +30,21 @@ def get_data(endpoint, params={}):
     data = response.json()
 
     return data
+
+# Connect to SQLite DB and execute SQL
+
+
+def fetchall_to_df(cursor):
+    columns = [x[0] for x in cursor.description]
+    records = cursor.fetchall()
+    df = pd.DataFrame(records, columns=columns)
+    return df
+
+
+def sql(sql, curs):
+    # check to see if the connection is closed due to timeout
+    # if self.conn.closed != 0:
+    #     self.connect(self.connected_profile_name)
+    curs.execute(sql)
+    if curs.description:
+        return fetchall_to_df(curs)

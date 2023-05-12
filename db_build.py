@@ -1,10 +1,6 @@
-from os import stat
+
 import pandas as pd
 import datetime
-
-from func import db_engine, get_data
-
-db = db_engine()
 
 # Utilities
 
@@ -106,7 +102,7 @@ def element_process(data, table):
                        'own_goals', 'penalties_saved', 'penalties_missed', 'yellow_cards', 'red_cards', 'saves']
     elif table == 'element_news':
         filter_cols = ['news', 'news_added']
-    elif table == 'element_price':
+    elif table == 'element_price1':
         filter_cols = ['cost_change_event', 'cost_change_event_fall', 'cost_change_start',
                        'cost_change_start_fall', 'transfers_in', 'transfers_in_event', 'transfers_out', 'transfers_out_event']
     elif table == 'element_info':
