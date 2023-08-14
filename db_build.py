@@ -1,8 +1,14 @@
-
+import sqlite3
 import pandas as pd
 import datetime
 
-# Utilities
+## Utilities ##
+
+# DB connection
+
+
+def db_conn():
+    return sqlite3.connect('db/fpl.db')
 
 
 def season_name():
@@ -20,7 +26,52 @@ def season_name():
     elif now.month in [1, 2, 3, 4, 5]:
         return f"{last_yr}_{this_yr}"
 
+
 # Main endpoint
+
+# Main -> Teams
+def teams(data, write_to_db=False, conn=db_conn()):
+    df = pd.DataFrame(data['teams'])
+    df['season_name'] = season_name()
+    df.rename(columns={'id': 'season_team_id',
+              'code': 'id'}, inplace=True)
+
+    if write_to_db:
+        df.to_sql('team', conn, if_exists='replace', index=False)
+
+    return df
+
+# Main -> Elements
+
+
+def elements(data, write_to_db=False, conn=db_conn()):
+    df = pd.DataFrame.from_dict(data['elements'])
+    df['season_name'] = season_name()
+    df.rename(columns={
+        'code': 'id',
+        'id': 'season_player_id',
+        'team': 'season_team_id',
+        'team_code': 'team_id'}, inplace=True)
+    for item in ['team_id', 'points_per_game', 'season_player_id', 'web_name', 'second_name', 'first_name', 'id']:
+        col_to_move = df.pop(item)
+        df.insert(0, item, col_to_move)
+
+    if write_to_db:
+        df.to_sql('player', conn, if_exists='replace', index=False)
+
+    return df
+
+
+def element_types(data, write_to_db=False, conn=db_conn()):
+    df = pd.DataFrame.from_dict(data['element_types'])
+    df['season_name'] = season_name()
+    df.pop('sub_positions_locked')
+    if write_to_db:
+        df.to_sql('player_type', conn, if_exists='replace', index=False)
+    return df
+
+
+##### 2023 edits above this line #####
 
 # Main -> Events
 
@@ -174,12 +225,4 @@ def fixtures(data):
     df.drop(['stats'], axis=1, inplace=True)
     df['season_name'] = season_name()
     df.rename(columns=to_rename, inplace=True)
-    return df
-
-
-def teams(data):
-    df = pd.DataFrame(data['teams'])
-    df['season_name'] = season_name()
-    df.rename(columns={'id': 'season_team_id',
-              'code': 'team_id'}, inplace=True)
     return df
