@@ -31,20 +31,4 @@ def get_data(endpoint, params={}):
 
     return data
 
-# Connect to SQLite DB and execute SQL
 
-
-def fetchall_to_df(cursor):
-    columns = [x[0] for x in cursor.description]
-    records = cursor.fetchall()
-    df = pd.DataFrame(records, columns=columns)
-    return df
-
-
-def sql(sql, curs):
-    # check to see if the connection is closed due to timeout
-    # if self.conn.closed != 0:
-    #     self.connect(self.connected_profile_name)
-    curs.execute(sql)
-    if curs.description:
-        return fetchall_to_df(curs)
